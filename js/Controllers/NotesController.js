@@ -1,12 +1,12 @@
-define(['Views/NotesView'], function (NotesView) {
+define(['Views/NotesView', 'Communication/Events'], function (NotesView, Events) {
 
     function start() {
         var notes;
         if (localStorage.notes) {
             notes = JSON.parse(localStorage.notes);
             console.log("testing");
-            NotesView.render(notes);
-        } NotesView.render([]);
+            Events.emit('start',notes);
+        } Events.emit('start', []);
         
     }
 

@@ -1,4 +1,4 @@
-define(function() {
+define(['Communication/Events'], function(Events) {
 
     function Note(args) {
         

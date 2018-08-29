@@ -1,12 +1,16 @@
-define(function () {
+define(['Communication/Events'], function (Events) {
+
+    var appTemplate = document.querySelector("#templNotes").content;
+    var appStage = document.querySelector("#notesBoard");
+
+    Events.on('start', render);
+
 
     function render(parameters) {
-        var appTemplate = document.querySelector("#templNotes").content;
-        var appStage = document.querySelector("#notesBoard");
 
-        var notesDb = parameters;
+        var notesDb = parameters;       
 
-        if (notesDb.length > 0) {
+        if ((notesDb ? notesDb.length:0) > 0) {
             for (var i = 0; i < notesDb.length; i++) {
                 var clone = appTemplate.cloneNode(true);
                 clone.querySelector(".note").id = notesDb[i].id;
@@ -17,6 +21,4 @@ define(function () {
             }
         }
     }
-
-    return {render: render};
 });
