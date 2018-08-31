@@ -1,12 +1,54 @@
 define(['Communication/Events'], function(Events) {
 
-    function Note(args) {
+    var notesContainer;
+    var JSONreadyNotes;
+
+    function init() {
         
-        this.id = args.id;
-        this.content = args.content;
-        this.creatDate = args.creatDate;
-        this.modifDate = args.modifDate;
+        if(localStorage.notes) {
+            JSONreadyNotes = JSON.parse(localStorage.notes);
+            if(JSONreadyNotes.length > 0) {
+                Events.emit('renderInit', JSONreadyNotes);
+            } 
+        }
+
+        Events.on('createNoteReq', newNote);
     }
     
-    return Note;
+    function newNote(data) {
+        
+        var noteData = {};
+
+        noteData.id = data.id;
+        noteData.content = "";
+        noteData.creatDate = data.creationDate;
+        noteData.modifDate = "";
+    
+        notesContainer = JSON.parse(localStorage.getItem('notes'));
+        notesContainer.push(noteData);
+        JSONreadyNotes = JSON.stringify(notesContainer);
+        localStorage.setItem("notes", JSONreadyNotes);
+        Events.emit('renderNew', noteData);
+    }
+
+    function notesSuscribe() {
+
+    }
+
+    function saveNote() {
+
+    }
+
+    function removeNote() {
+
+    }
+
+    function getNote() {
+
+    }
+    
+    return {
+        newNote: newNote,
+        init: init
+    };
 });

@@ -1,24 +1,10 @@
-require(['Models/Note', 'Controllers/NotesController'], function(Note, NotesController) {
+require(['Models/Note', 'Presenters/NotesPresenter','Views/NotesView'], function(Note, NotesPresenter, NotesView) {
 
-    var notes = [
-        new Note({
-            id: '01',
-            content: 'contentTest',
-            creatDate: 'createDateTest',
-            modifDate: 'modifDateTest'
-        }),
-        new Note({
-            id: '01',
-            content: 'contentTest2',
-            creatDate: 'createDateTest2',
-            modifDate: 'modifDateTest2'
-        })];
-
-    console.dir(notes);
-
-    localStorage.notes = JSON.stringify(notes);
-
-    NotesController.start();
-
-
+   
+    Note.init();
+    NotesView.init();
+    NotesPresenter.init();
+    
+    
+    
 });

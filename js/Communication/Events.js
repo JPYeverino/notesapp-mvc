@@ -8,12 +8,9 @@ define(function () {
     }
 
     function off(eventName, fn) {
-        if(
-            events[eventName]) {
-            for (var i = 0; i < 
-                events[eventName].length; i++) {
-                if(
-                    events[eventName] === fn) {
+        if(events[eventName]) {
+            for (var i = 0; i < events[eventName].length; i++) {
+                if(events[eventName] === fn) {
                     
                     evens[eventName].splice(i,1);
                     break;
@@ -33,6 +30,7 @@ define(function () {
     }
 
     return {
+        events: events,
         on: on,
         off: off,
         emit: emit
