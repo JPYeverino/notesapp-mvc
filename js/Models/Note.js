@@ -76,12 +76,12 @@ define(['Communication/Events'], function (Events) {
     }
 
     function searchNote(data) {
-        notesData = JSON.parse(localStorage.getItem('notes'))
+        notesResults = JSON.parse(localStorage.getItem('notes'))
                     .filter(function(note){
                         var regex = new RegExp(data, 'gi');
                         return note.content.match(regex);
                     });
-        Events.emit('renderSearch', notesData);
+        Events.emit('renderSearch', notesResults);
         
 
     }
