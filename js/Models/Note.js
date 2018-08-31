@@ -7,9 +7,8 @@ define(['Communication/Events'], function (Events) {
     } else { notesData = []; }
 
     function init() {
-        console.log("Model init");
         if (localStorage.notes) {
-            JSONreadyNotes = JSON.parse(localStorage.notes);
+            JSONreadyNotes = JSON.parse(localStorage.getItem('notes'));
             if (JSONreadyNotes.length > 0) {
                 Events.emit('renderInit', JSONreadyNotes);
             }
@@ -18,6 +17,7 @@ define(['Communication/Events'], function (Events) {
         Events.on('createNoteReq', newNote);
         Events.on('saveNoteReq', saveNote);
         Events.on('removeNoteReq', removeNote);
+        Events.on('searchNoteReq', searchNote);
     }
 
     function newNote(data) {
@@ -73,6 +73,17 @@ define(['Communication/Events'], function (Events) {
             JSONreadyNotes = JSON.stringify(notesData);
             localStorage.setItem("notes", JSONreadyNotes);
         } else console.log("not found to remove");
+    }
+
+    function searchNote(data) {
+        notesData = JSON.parse(localStorage.getItem('notes'))
+                    .filter(function(note){
+                        var regex = new RegExp(data, 'gi');
+                        return note.content.match(regex);
+                    });
+        Events.emit('renderSearch', notesData);
+        
+
     }
 
     

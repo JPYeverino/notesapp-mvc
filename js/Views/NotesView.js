@@ -4,10 +4,12 @@ define(['Communication/Events'], function (Events) {
     var appTemplate = document.querySelector("#templNotes").content;
     var appStage = document.querySelector("#notesBoard");
     var save;
+    var searchVal = document.querySelector("#search");
 
     function init() {
         Events.on('render', render);
         Events.on('createNoteReq', addNote);
+        Events.on('renderResults', renderResults)
         console.log("View init");
 
     }
@@ -15,7 +17,6 @@ define(['Communication/Events'], function (Events) {
     function render(parameters) {
         console.dir(parameters)
         var notesDb = parameters;
-        var count = 0;
 
         if ((notesDb ? notesDb.length : 0) > 0) {
             for (var i = 0; i < notesDb.length; i++) {
@@ -107,6 +108,22 @@ define(['Communication/Events'], function (Events) {
     //Add the envent listener for the closing button using event delegation.
     appStage.addEventListener("click", closeNoteBtn);
 
+    //Add the event listener for the search input.
+    searchVal.addEventListener("input", searchNotes);
+
+    //Callback function for the search input.
+    function searchNotes(e) {
+        Events.emit('searchNotesView', e.target.value);
+    }
+
+    function renderResults (data) {
+        while(appStage.firstChild) {
+            appStage.removeChild(appStage.firstChild);
+        }
+        Events.emit('render', data);
+
+    }
+    
     return {
         init: init,
         render: render,
