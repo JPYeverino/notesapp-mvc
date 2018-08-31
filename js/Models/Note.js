@@ -81,13 +81,10 @@ define(['Communication/Events'], function (Events) {
                         var regex = new RegExp(data, 'gi');
                         return note.content.match(regex);
                     });
+
         Events.emit('renderSearch', notesResults);
-        
-
     }
-
     
-
     return {
         newNote: newNote,
         init: init
