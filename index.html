@@ -19,16 +19,17 @@
             <button id="newNote" type="button">New Note</button>
         </div>
         <form class="search-form">
-            <input type="text" id="search" placeholder="Search for content">
+            <input type="text" id="search" placeholder="Search for a note">
           </form>
 
         <template id="templNotes">
-
-            <div class="note" draggable="true">
-                <span class="closebtn">&times;</span>
-                <p class='input1' contenteditable="true"></p>
-
-                <span class="createD"></span><span class="modifyD"></span>
+            <div class="invisible">
+                <div class="note" draggable="true">
+                    <span class="closebtn">&times;</span>
+                    <p class='input1' contenteditable="true"></p>
+    
+                    <span class="createD"></span><span class="modifyD"></span>
+                </div>
             </div>
         </template>
 

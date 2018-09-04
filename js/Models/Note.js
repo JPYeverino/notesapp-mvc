@@ -2,7 +2,7 @@ define(['Communication/Events'], function (Events) {
 
     var notesData;
     var JSONreadyNotes;
-    if(localStorage.notes) {
+    if (localStorage.notes) {
         notesData = JSON.parse(localStorage.getItem('notes'));
     } else { notesData = []; }
 
@@ -43,7 +43,7 @@ define(['Communication/Events'], function (Events) {
             localStorage.setItem("notes", JSONreadyNotes);
             Events.emit('renderNew', noteData);
         }
-        
+
     }
 
     var findNote = function (id) {
@@ -76,15 +76,17 @@ define(['Communication/Events'], function (Events) {
     }
 
     function searchNote(data) {
-        notesResults = JSON.parse(localStorage.getItem('notes'))
-                    .filter(function(note){
-                        var regex = new RegExp(data, 'gi');
-                        return note.content.match(regex);
-                    });
+        var notesResults = JSON.parse(localStorage.getItem('notes'))
+            .filter(function (note) {
+                var regex = new RegExp(data, 'gi');
+                return note.content.match(regex);
+            });
 
         Events.emit('renderSearch', notesResults);
     }
-    
+
+
+
     return {
         newNote: newNote,
         init: init

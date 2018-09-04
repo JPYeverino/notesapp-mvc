@@ -108,22 +108,50 @@ define(['Communication/Events'], function (Events) {
     //Add the envent listener for the closing button using event delegation.
     appStage.addEventListener("click", closeNoteBtn);
 
-    //Add the event listener for the search input.
-    searchVal.addEventListener("input", searchNotes);
-
     //Callback function for the search input.
     function searchNotes(e) {
         Events.emit('searchNotesView', e.target.value);
     }
 
+    //Add the event listener for the search input.
+    searchVal.addEventListener("input", searchNotes);
+
+    //Function that render the Search results.
     function renderResults (data) {
         while(appStage.firstChild) {
             appStage.removeChild(appStage.firstChild);
         }
         Events.emit('render', data);
-
     }
-    
+
+    function dragStart(e) {
+        console.dir (e.target.id + ' dragging');
+    }
+
+    appStage.addEventListener('dragstart', dragStart);
+    //Function to the drag note event listener.
+    function dragOver (e) {
+        e.preventDefault();
+        var actualNoteId = e.target.parentNode.id;
+        console.log(actualNoteId + ' dragOver');
+    }
+
+    appStage.addEventListener("dragover", dragOver);
+
+    function dragEnter (e) {
+        e.preventDefault();
+        var actualNoteId = e.target.parentNode.id;
+        console.log(actualNoteId + ' dragEnter');
+    }
+
+    appStage.addEventListener("dragenter", dragEnter);
+
+    function dropNote (e) {
+        console.log(e.target.parentNode.id);
+    }
+    appStage.addEventListener("drop ", dropNote);
+
+
     return {
         init: init,
         render: render,
