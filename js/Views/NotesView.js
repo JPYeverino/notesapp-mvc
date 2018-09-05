@@ -10,18 +10,16 @@ define(['Communication/Events'], function (Events) {
         Events.on('render', render);
         Events.on('createNoteReq', addNote);
         Events.on('renderResults', renderResults)
-        console.log("View init");
 
     }
 
     function render(parameters) {
-        console.dir(parameters)
         var notesDb = parameters;
 
         if ((notesDb ? notesDb.length : 0) > 0) {
             for (var i = 0; i < notesDb.length; i++) {
                 var clone = appTemplate.cloneNode(true);
-                clone.querySelector(".note").id = notesDb[i].id;
+                clone.querySelector(".invisible").id = notesDb[i].id;
                 clone.querySelector(".input1").textContent = notesDb[i].content;
                 clone.querySelector(".createD").textContent = "Created: " + notesDb[i].creationDate;
                 clone.querySelector(".modifyD").textContent = "Modified: " + notesDb[i].modifyDate;
@@ -48,19 +46,18 @@ define(['Communication/Events'], function (Events) {
     function addNote(data) {
 
         var clone = appTemplate.cloneNode(true);
-        clone.querySelector(".note").id = data.id;
+        clone.querySelector(".invisible").id = data.id;
         clone.querySelector(".createD").textContent = "Created: " + data.creationDate;
         clone.querySelector(".modifyD").textContent = "Modified: "
         appStage.appendChild(clone);
     }
 
     function inputListening(e) {
-        var actualNoteId = e.target.parentNode.id;
+        var actualNoteId = e.target.parentNode.parentNode.id;
         var actualNoteContent = e.target.textContent;
 
-        if(!save) {
+        if (!save) {
             save = setTimeout(function () {
-                console.log(save);
                 var date = new Date();
                 var modifyDate = date.getTime();
                 var info = {
@@ -95,13 +92,13 @@ define(['Communication/Events'], function (Events) {
 
     //Callback function for the "remove button" note from the DOM and from the DB
     function closeNoteBtn(e) {
-        var actualNoteId = e.target.parentNode.id;
+        var actualNoteId = e.target.parentNode.parentNode.id;
         //Ensures that the element being clicked is the closing button.
         if (e.target.className != "closebtn") {
             return;
         } else {
             Events.emit('removeNoteView', actualNoteId);
-            appStage.removeChild(e.target.parentNode);
+            appStage.removeChild(e.target.parentNode.parentNode);
         }
     }
 
@@ -117,39 +114,78 @@ define(['Communication/Events'], function (Events) {
     searchVal.addEventListener("input", searchNotes);
 
     //Function that render the Search results.
-    function renderResults (data) {
-        while(appStage.firstChild) {
+    function renderResults(data) {
+        while (appStage.firstChild) {
             appStage.removeChild(appStage.firstChild);
         }
         Events.emit('render', data);
     }
 
+    var dragSrcEl = null;
+
     function dragStart(e) {
-        console.dir (e.target.id + ' dragging');
+
+        dragSrcEl = e.target.parentNode.id;
     }
 
     appStage.addEventListener('dragstart', dragStart);
+
     //Function to the drag note event listener.
-    function dragOver (e) {
+    function dragOver(e) {
         e.preventDefault();
-        var actualNoteId = e.target.parentNode.id;
-        console.log(actualNoteId + ' dragOver');
+        var actualNoteId;
+
+        if (e.target.id === "" && e.target.parentNode.id == "") {
+            actualNoteId = e.target.parentNode.parentNode.id;
+        } else if (e.target.id === "" && e.target.parentNode.parentNode.id === "notesBoard") {
+            actualNoteId = e.target.parentNode.id;
+        } else if (e.target.parentNode.id === "notesBoard" && e.target.parentNode.parentNode.id === "wrapper") {
+            actualNoteId = e.target.id
+        } else return;
+
+        document.getElementById(actualNoteId).className += ' hover';
     }
 
     appStage.addEventListener("dragover", dragOver);
 
-    function dragEnter (e) {
+    function dragEnter(e) {
         e.preventDefault();
-        var actualNoteId = e.target.parentNode.id;
-        console.log(actualNoteId + ' dragEnter');
+        var actualNoteId;
+
+        if (e.target.id === "" && e.target.parentNode.id == "") {
+            actualNoteId = e.target.parentNode.parentNode.id;
+        } else if (e.target.id === "" && e.target.parentNode.parentNode.id === "notesBoard") {
+            actualNoteId = e.target.parentNode.id;
+        } else if (e.target.parentNode.id === "notesBoard" && e.target.parentNode.parentNode.id === "wrapper") {
+            actualNoteId = e.target.id
+        } else return;
     }
 
     appStage.addEventListener("dragenter", dragEnter);
 
-    function dropNote (e) {
-        console.log(e.target.parentNode.id);
+    function dropNote(e) {
+        e.preventDefault();
+        var actualNoteId;
+
+        if (e.target.id === "" && e.target.parentNode.id == "") {
+            actualNoteId = e.target.parentNode.parentNode.id;
+        } else if (e.target.id === "" && e.target.parentNode.parentNode.id === "notesBoard") {
+            actualNoteId = e.target.parentNode.id;
+        } else if (e.target.parentNode.id === "notesBoard" && e.target.parentNode.parentNode.id === "wrapper") {
+            actualNoteId = e.target.id
+        } else return;
+
+        if(actualNoteId != dragSrcEl) {
+            var info = {
+                old: actualNoteId,
+                new: dragSrcEl
+            };
+            Events.emit('reorder', info);
+        } 
+        
     }
-    appStage.addEventListener("drop ", dropNote);
+
+    appStage.addEventListener("drop", dropNote);
 
 
     return {

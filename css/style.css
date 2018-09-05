@@ -72,6 +72,9 @@ html {
 }
 
 .invisible {
+    background-image: none;
     padding: 10px;
     box-sizing: border-box;
 }
+
+

@@ -18,6 +18,7 @@ define(['Communication/Events'], function (Events) {
         Events.on('saveNoteReq', saveNote);
         Events.on('removeNoteReq', removeNote);
         Events.on('searchNoteReq', searchNote);
+        Events.on('reorderReq', reorderData);
     }
 
     function newNote(data) {
@@ -83,6 +84,18 @@ define(['Communication/Events'], function (Events) {
             });
 
         Events.emit('renderSearch', notesResults);
+    }
+
+    function reorderData(data) {
+        
+        var oldIndex = findNote(data.old);
+        var newIndex = findNote(data.new);
+
+        notesData.splice(oldIndex, 0, notesData.splice(newIndex, 1)[0]);
+        JSONreadyNotes = JSON.stringify(notesData);
+        localStorage.setItem("notes", JSONreadyNotes);
+
+        Events.emit('renderSearch', notesData);
     }
 
 

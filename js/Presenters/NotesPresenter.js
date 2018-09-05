@@ -3,13 +3,13 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
 
 
     function init() {
-        console.log("Presenter init");
         Events.on('renderInit', renderNotes);
         Events.on('renderSearch', renderSearch);
         Events.on('newNoteClick', newNote);
         Events.on('saveNoteView', saveNote);
         Events.on('removeNoteView', removeNote);
         Events.on('searchNotesView', searchNote);
+        Events.on('reorder', reorder);
     }
 
     function renderNotes(data) {
@@ -34,6 +34,10 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
 
     function renderSearch (data) {
         Events.emit('renderResults', data);
+    }
+
+    function reorder (data) {
+        Events.emit('reorderReq', data);
     }
 
 
