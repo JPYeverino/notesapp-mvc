@@ -1,6 +1,7 @@
 define(['Communication/Events'], function (Events) {
 
-    var button = document.getElementById("controls");
+    var newBtn = document.getElementById("newNote");
+    var undoBtn = document.getElementById("undo");
     var appTemplate = document.querySelector("#templNotes").content;
     var appStage = document.querySelector("#notesBoard");
     var save;
@@ -9,7 +10,7 @@ define(['Communication/Events'], function (Events) {
     function init() {
         Events.on('render', render);
         Events.on('createNoteReq', addNote);
-        Events.on('renderResults', renderResults)
+        Events.on('renderResults', renderResults);
 
     }
 
@@ -28,7 +29,7 @@ define(['Communication/Events'], function (Events) {
         }
     }
 
-    button.addEventListener('click', newNotefn);
+    newBtn.addEventListener('click', newNotefn);
 
     function newNotefn() {
 
@@ -41,6 +42,13 @@ define(['Communication/Events'], function (Events) {
         };
         Events.emit('newNoteClick', info);
 
+    }
+
+    undoBtn.addEventListener('click', undoFn);
+
+    function undoFn() {
+        console.info("1st step completed"); 
+        Events.emit('undo');
     }
 
     function addNote(data) {
@@ -90,19 +98,19 @@ define(['Communication/Events'], function (Events) {
     //Add the event listener for each input on the note content using event delegation.
     appStage.addEventListener("input", inputListening);
 
-    //Callback function for the "remove button" note from the DOM and from the DB
+    //Callback function for the "remove newBtn" note from the DOM and from the DB
     function closeNoteBtn(e) {
         var actualNoteId = e.target.parentNode.parentNode.id;
-        //Ensures that the element being clicked is the closing button.
+        //Ensures that the element being clicked is the closing newBtn.
         if (e.target.className != "closebtn") {
             return;
         } else {
             Events.emit('removeNoteView', actualNoteId);
             appStage.removeChild(e.target.parentNode.parentNode);
         }
-    }
+    }   
 
-    //Add the envent listener for the closing button using event delegation.
+    //Add the envent listener for the closing newBtn using event delegation.
     appStage.addEventListener("click", closeNoteBtn);
 
     //Callback function for the search input.
@@ -142,8 +150,6 @@ define(['Communication/Events'], function (Events) {
         } else if (e.target.parentNode.id === "notesBoard" && e.target.parentNode.parentNode.id === "wrapper") {
             actualNoteId = e.target.id
         } else return;
-
-        document.getElementById(actualNoteId).className += ' hover';
     }
 
     appStage.addEventListener("dragover", dragOver);

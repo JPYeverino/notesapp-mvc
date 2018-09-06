@@ -19,6 +19,7 @@ define(['Communication/Events'], function (Events) {
         Events.on('removeNoteReq', removeNote);
         Events.on('searchNoteReq', searchNote);
         Events.on('reorderReq', reorderData);
+        Events.on('removeNoteDataUndo', sendRemoveNoteData);
     }
 
     function newNote(data) {
@@ -68,12 +69,19 @@ define(['Communication/Events'], function (Events) {
     }
 
     function removeNote(data) {
+        console.log('2nd to enter');
         index = findNote(data);
         if (index >= 0) {
             notesData.splice(index, 1);
             JSONreadyNotes = JSON.stringify(notesData);
             localStorage.setItem("notes", JSONreadyNotes);
         } else console.log("not found to remove");
+    }
+
+    function sendRemoveNoteData(data) {
+        console.dir('first to enter');
+        index = findNote(data);
+        Events.emit('getRemoveData', notesData[index]);
     }
 
     function searchNote(data) {
@@ -87,7 +95,7 @@ define(['Communication/Events'], function (Events) {
     }
 
     function reorderData(data) {
-        
+
         var oldIndex = findNote(data.old);
         var newIndex = findNote(data.new);
 
@@ -97,8 +105,6 @@ define(['Communication/Events'], function (Events) {
 
         Events.emit('renderSearch', notesData);
     }
-
-
 
     return {
         newNote: newNote,

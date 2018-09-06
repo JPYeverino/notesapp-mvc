@@ -8,8 +8,11 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
         Events.on('newNoteClick', newNote);
         Events.on('saveNoteView', saveNote);
         Events.on('removeNoteView', removeNote);
+        Events.on('getRemoveData', removeNoteUndo);
         Events.on('searchNotesView', searchNote);
         Events.on('reorder', reorder);
+        //02. Get the undo button instruction.
+        Events.on('undo', undoFn);
     }
 
     function renderNotes(data) {
@@ -25,6 +28,7 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
     }
 
     function removeNote(data) {
+        Events.emit('removeNoteDataUndo',data);
         Events.emit('removeNoteReq', data);
     }
 
@@ -39,11 +43,16 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
     function reorder (data) {
         Events.emit('reorderReq', data);
     }
+    //03. Send undo signal
+    function undoFn () {
+        console.info("3rd step completed");
+        Events.emit('undoReq');
+    }
 
-
-
-
-
+    function removeNoteUndo (data) {
+        console.log("Presenter got instruction remove note");
+        Events.emit("removeFromUndo",data);
+    }
 
     return {
         init: init
