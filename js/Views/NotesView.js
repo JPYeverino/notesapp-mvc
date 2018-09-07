@@ -9,14 +9,21 @@ define(['Communication/Events'], function (Events) {
 
     function init() {
         Events.on('render', render);
-        Events.on('createNoteReq', addNote);
-        Events.on('renderResults', renderResults);
+        Events.on('addNoteView', render);
+        Events.on('renderResults', render);
+        Events.on('removeFromUndo', removeFromUndo);
+
+
 
     }
 
     function render(parameters) {
         var notesDb = parameters;
 
+        while (appStage.firstChild) {
+            appStage.removeChild(appStage.firstChild);
+        }
+        
         if ((notesDb ? notesDb.length : 0) > 0) {
             for (var i = 0; i < notesDb.length; i++) {
                 var clone = appTemplate.cloneNode(true);
@@ -47,17 +54,7 @@ define(['Communication/Events'], function (Events) {
     undoBtn.addEventListener('click', undoFn);
 
     function undoFn() {
-        console.info("1st step completed"); 
         Events.emit('undo');
-    }
-
-    function addNote(data) {
-
-        var clone = appTemplate.cloneNode(true);
-        clone.querySelector(".invisible").id = data.id;
-        clone.querySelector(".createD").textContent = "Created: " + data.creationDate;
-        clone.querySelector(".modifyD").textContent = "Modified: "
-        appStage.appendChild(clone);
     }
 
     function inputListening(e) {
@@ -106,9 +103,12 @@ define(['Communication/Events'], function (Events) {
             return;
         } else {
             Events.emit('removeNoteView', actualNoteId);
-            appStage.removeChild(e.target.parentNode.parentNode);
         }
-    }   
+    }
+    
+    function removeFromUndo (data) {
+        Events.emit('removeNoteView', data);
+    }
 
     //Add the envent listener for the closing newBtn using event delegation.
     appStage.addEventListener("click", closeNoteBtn);
@@ -120,14 +120,6 @@ define(['Communication/Events'], function (Events) {
 
     //Add the event listener for the search input.
     searchVal.addEventListener("input", searchNotes);
-
-    //Function that render the Search results.
-    function renderResults(data) {
-        while (appStage.firstChild) {
-            appStage.removeChild(appStage.firstChild);
-        }
-        Events.emit('render', data);
-    }
 
     var dragSrcEl = null;
 
@@ -196,8 +188,6 @@ define(['Communication/Events'], function (Events) {
 
     return {
         init: init,
-        render: render,
-        addNote: addNote
     };
 
 });

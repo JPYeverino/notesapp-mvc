@@ -4,15 +4,19 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
 
     function init() {
         Events.on('renderInit', renderNotes);
+        Events.on('renderNew', addNoteView);
         Events.on('renderSearch', renderSearch);
         Events.on('newNoteClick', newNote);
         Events.on('saveNoteView', saveNote);
         Events.on('removeNoteView', removeNote);
-        Events.on('getRemoveData', removeNoteUndo);
         Events.on('searchNotesView', searchNote);
         Events.on('reorder', reorder);
-        //02. Get the undo button instruction.
+        Events.on('commandNewNote', commandNewNote); // Get info from newNote to send command pattern
+        Events.on('commandRemoveNote', commandRemoveNote); // Get info from removeNote to send command pattern
         Events.on('undo', undoFn);
+        Events.on('undoNewNote', undoNewNote);
+
+        
     }
 
     function renderNotes(data) {
@@ -23,12 +27,15 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
         Events.emit('createNoteReq', data);
     }
 
+    function addNoteView(data){
+        Events.emit('addNoteView', data);
+    }
+
     function saveNote(data) {
         Events.emit('saveNoteReq', data);
     }
 
     function removeNote(data) {
-        Events.emit('removeNoteDataUndo',data);
         Events.emit('removeNoteReq', data);
     }
 
@@ -43,15 +50,21 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
     function reorder (data) {
         Events.emit('reorderReq', data);
     }
-    //03. Send undo signal
+
+    function commandNewNote (data) {
+        Events.emit('setCommandNewNote', data);
+    }
+
     function undoFn () {
-        console.info("3rd step completed");
         Events.emit('undoReq');
     }
 
-    function removeNoteUndo (data) {
-        console.log("Presenter got instruction remove note");
-        Events.emit("removeFromUndo",data);
+    function undoNewNote (data) {
+        Events.emit("removeNoteReq",data.id);
+    }
+
+    function commandRemoveNote (data) {
+        Events.emit('setCommandRemoveNote', data);
     }
 
     return {

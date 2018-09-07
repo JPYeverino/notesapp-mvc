@@ -23,27 +23,38 @@ define(['Communication/Events'], function (Events) {
     }
 
     function newNote(data) {
-
         var noteData = {};
-
+        
         noteData.id = data.id;
-        noteData.content = "";
+        noteData.content = data.content || "" ;
         noteData.creationDate = data.creationDate;
-        noteData.modifyDate = "";
+        noteData.modifyDate = data.modifyDate || "";
 
         if (localStorage.getItem('notes') != null) {
 
             notesData = JSON.parse(localStorage.getItem('notes'));
-            notesData.push(noteData);
+            if (!data.hasOwnProperty('index')) {
+                notesData.push(noteData);
+            } else {
+                console.dir(notesData);
+                notesData.splice(data.index, 0, noteData);
+            }
             JSONreadyNotes = JSON.stringify(notesData);
             localStorage.setItem("notes", JSONreadyNotes);
-            Events.emit('renderNew', noteData);
+            Events.emit('renderInit', notesData);
+            if (!data.content) {
+                Events.emit('commandNewNote', noteData);
+            }
+
         } else {
             notesData = [];
             notesData.push(noteData);
             JSONreadyNotes = JSON.stringify(notesData);
             localStorage.setItem("notes", JSONreadyNotes);
-            Events.emit('renderNew', noteData);
+            Events.emit('renderInit', notesData);
+            if (!data.content) {
+                Events.emit('commandNewNote', noteData);
+            }
         }
 
     }
@@ -69,17 +80,24 @@ define(['Communication/Events'], function (Events) {
     }
 
     function removeNote(data) {
-        console.log('2nd to enter');
-        index = findNote(data);
+        index = data.id ? findNote(data.id) : findNote(data);
         if (index >= 0) {
-            notesData.splice(index, 1);
-            JSONreadyNotes = JSON.stringify(notesData);
-            localStorage.setItem("notes", JSONreadyNotes);
+            if (!data.id) {
+                Events.emit('commandRemoveNote', { arr: notesData[index], index: index });
+                notesData.splice(index, 1);
+                JSONreadyNotes = JSON.stringify(notesData);
+                localStorage.setItem("notes", JSONreadyNotes);
+                Events.emit('renderInit', notesData);
+            } else {
+                notesData.splice(index, 1);
+                JSONreadyNotes = JSON.stringify(notesData);
+                localStorage.setItem("notes", JSONreadyNotes);
+                Events.emit('renderInit', notesData);
+            }
         } else console.log("not found to remove");
     }
 
     function sendRemoveNoteData(data) {
-        console.dir('first to enter');
         index = findNote(data);
         Events.emit('getRemoveData', notesData[index]);
     }
