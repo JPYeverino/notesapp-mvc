@@ -71,9 +71,7 @@ define(['Communication/Events'], function (Events) {
                     modifyDate: modifyDate
                 }
                 Events.emit('saveNoteView', info);
-                e.target.parentNode.querySelector(".modifyD").textContent =
-                    "Saved: " + modifyDate;
-            }, 1000);
+            }, 500);
         } else {
             clearTimeout(save);
             save = setTimeout(function () {
@@ -88,7 +86,7 @@ define(['Communication/Events'], function (Events) {
                 Events.emit('saveNoteView', info);
                 e.target.parentNode.querySelector(".modifyD").textContent =
                     "Modified: " + modifyDate;
-            }, 1000);
+            }, 500);
 
         }
     }

@@ -8,6 +8,8 @@ define(['Communication/Events'], function (Events) {
     function init() {
         Events.on('setCommandNewNote', commandNewNote);
         Events.on('setCommandRemoveNote', commandRemoveNote);
+        Events.on('setCommandReorderNote', commandReorderNote);
+        Events.on('setCommandSaveNote', commandSaveNote);
         Events.on('undoReq', executeUndo);
         // Events.on('saveNoteReq', commandSaveNote);
         // Events.on('removeNoteReq', commandRemoveNote);
@@ -44,15 +46,47 @@ define(['Communication/Events'], function (Events) {
                 modifyDate: data.arr.modifyDate,
                 index: data.index
             }
-
         };
         if (commandList[currentCommand + 1]) {
             commandList.splice(currentCommand + 1);
         }
-        console.log('commandRemoveNote')
-        console.log(currentCommand);
-        console.dir(commandList);
+    }
 
+    function commandReorderNote(data) {
+        currentCommand++;
+        commandList[currentCommand] = {
+            action: 'reorderData',
+            undo: 'reorder',
+            noteData: {
+                new: data.index.old,
+                old: data.index.new,
+                status: 'on'
+            }
+        };
+        console.dir(commandList[currentCommand]);
+        if (commandList[currentCommand + 1]) {
+            commandList.splice(currentCommand + 1);
+        }
+    }
+    
+    function commandSaveNote(data) {
+        currentCommand++;
+        commandList[currentCommand] = {
+            action: 'saveNote',
+            undo: 'saveNoteView',
+            noteData: {
+                index: data.index,
+                id: data.data.id,
+                content: data.data.content,
+                modifyDate: data.data.modifyDate
+            }
+        };
+        console.dir(data);
+        console.dir(commandList[currentCommand]);
+
+        if (commandList[currentCommand + 1]) {
+            commandList.splice(currentCommand + 1);
+        }
     }
 
     function executeUndo() {
@@ -63,7 +97,7 @@ define(['Communication/Events'], function (Events) {
             console.dir('not undo available ' + currentCommand);
         }
     }
-    
+
     return {
         init: init
     };

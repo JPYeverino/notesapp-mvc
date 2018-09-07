@@ -14,6 +14,8 @@ define(['Communication/Events'], function (Events) {
             }
         }
 
+        console.dir(notesData);
+
         Events.on('createNoteReq', newNote);
         Events.on('saveNoteReq', saveNote);
         Events.on('removeNoteReq', removeNote);
@@ -24,9 +26,9 @@ define(['Communication/Events'], function (Events) {
 
     function newNote(data) {
         var noteData = {};
-        
+
         noteData.id = data.id;
-        noteData.content = data.content || "" ;
+        noteData.content = data.content || "";
         noteData.creationDate = data.creationDate;
         noteData.modifyDate = data.modifyDate || "";
 
@@ -36,7 +38,6 @@ define(['Communication/Events'], function (Events) {
             if (!data.hasOwnProperty('index')) {
                 notesData.push(noteData);
             } else {
-                console.dir(notesData);
                 notesData.splice(data.index, 0, noteData);
             }
             JSONreadyNotes = JSON.stringify(notesData);
@@ -69,13 +70,21 @@ define(['Communication/Events'], function (Events) {
     };
 
     function saveNote(data) {
-        var index = findNote(data.id);
+        var index = data.index ? data.index : findNote(data.id);
         if (index >= 0) {
+            if (!data.index) {
+                var info = {
+                    index: index,
+                    data: notesData[index]
+                };
+                Events.emit("commandSaveNote", info);
+            }
             notesData = JSON.parse(localStorage.getItem('notes'));
             notesData[index].content = data.content;
             notesData[index].modifyDate = data.modifyDate;
             JSONreadyNotes = JSON.stringify(notesData);
             localStorage.setItem("notes", JSONreadyNotes);
+            Events.emit('render', notesData);
         } else console.log("not found");
     }
 
@@ -113,9 +122,16 @@ define(['Communication/Events'], function (Events) {
     }
 
     function reorderData(data) {
+        var oldIndex = data.status ? data.old : findNote(data.old);
+        var newIndex = data.status ? data.new : findNote(data.new);
 
-        var oldIndex = findNote(data.old);
-        var newIndex = findNote(data.new);
+        if (!data.hasOwnProperty('status')) {
+            var info = {
+                new: newIndex,
+                old: oldIndex
+            }
+            Events.emit('commandReorderData', { index: info, status: '' });
+        }
 
         notesData.splice(oldIndex, 0, notesData.splice(newIndex, 1)[0]);
         JSONreadyNotes = JSON.stringify(notesData);

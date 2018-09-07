@@ -13,10 +13,9 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
         Events.on('reorder', reorder);
         Events.on('commandNewNote', commandNewNote); // Get info from newNote to send command pattern
         Events.on('commandRemoveNote', commandRemoveNote); // Get info from removeNote to send command pattern
+        Events.on('commandReorderData', commandReorderNote); // Get info from dragAndDrop
+        Events.on('commandSaveNote', commandSaveNote); // Get info from Save
         Events.on('undo', undoFn);
-        Events.on('undoNewNote', undoNewNote);
-
-        
     }
 
     function renderNotes(data) {
@@ -59,12 +58,15 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
         Events.emit('undoReq');
     }
 
-    function undoNewNote (data) {
-        Events.emit("removeNoteReq",data.id);
-    }
-
     function commandRemoveNote (data) {
         Events.emit('setCommandRemoveNote', data);
+    }
+    function commandReorderNote (data) {
+        Events.emit('setCommandReorderNote', data);
+    }
+    
+    function commandSaveNote (data) {
+        Events.emit('setCommandSaveNote', data);
     }
 
     return {
