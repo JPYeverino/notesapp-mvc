@@ -3,9 +3,7 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
 
 
     function init() {
-        Events.on('renderInit', renderNotes);
-        Events.on('renderNew', addNoteView);
-        Events.on('renderSearch', renderSearch);
+        Events.on('update', renderNotes);
         Events.on('newNoteClick', newNote);
         Events.on('saveNoteView', saveNote);
         Events.on('removeNoteView', removeNote);
@@ -26,10 +24,6 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
         Events.emit('createNoteReq', data);
     }
 
-    function addNoteView(data){
-        Events.emit('addNoteView', data);
-    }
-
     function saveNote(data) {
         Events.emit('saveNoteReq', data);
     }
@@ -41,11 +35,7 @@ define(['Communication/Events', 'Views/NotesView'], function (Events, NotesView)
     function searchNote(data) {
         Events.emit('searchNoteReq', data);
     }
-
-    function renderSearch (data) {
-        Events.emit('renderResults', data);
-    }
-
+    
     function reorder (data) {
         Events.emit('reorderReq', data);
     }

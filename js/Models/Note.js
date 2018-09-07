@@ -10,7 +10,7 @@ define(['Communication/Events'], function (Events) {
         if (localStorage.notes) {
             JSONreadyNotes = JSON.parse(localStorage.getItem('notes'));
             if (JSONreadyNotes.length > 0) {
-                Events.emit('renderInit', JSONreadyNotes);
+                Events.emit('update', JSONreadyNotes);
             }
         }
 
@@ -19,7 +19,7 @@ define(['Communication/Events'], function (Events) {
         Events.on('removeNoteReq', removeNote);
         Events.on('searchNoteReq', searchNote);
         Events.on('reorderReq', reorderData);
-        Events.on('removeNoteDataUndo', sendRemoveNoteData);
+        // Events.on('removeNoteDataUndo', sendRemoveNoteData);
     }
 
     function newNote(data) {
@@ -40,7 +40,7 @@ define(['Communication/Events'], function (Events) {
             }
             JSONreadyNotes = JSON.stringify(notesData);
             localStorage.setItem("notes", JSONreadyNotes);
-            Events.emit('renderInit', notesData);
+            Events.emit('update', notesData);
             if (!data.hasOwnProperty('index')) {
                 Events.emit('commandNewNote', noteData);
             }
@@ -50,7 +50,7 @@ define(['Communication/Events'], function (Events) {
             notesData.push(noteData);
             JSONreadyNotes = JSON.stringify(notesData);
             localStorage.setItem("notes", JSONreadyNotes);
-            Events.emit('renderInit', notesData);
+            Events.emit('update', notesData);
             if (!data.index) {
                 Events.emit('commandNewNote', noteData);
             }
@@ -82,7 +82,7 @@ define(['Communication/Events'], function (Events) {
             notesData[index].modifyDate = data.modifyDate;
             JSONreadyNotes = JSON.stringify(notesData);
             localStorage.setItem("notes", JSONreadyNotes);
-            Events.emit('render', notesData);
+            Events.emit('update', notesData);
         } else console.log("not found");
     }
 
@@ -94,12 +94,12 @@ define(['Communication/Events'], function (Events) {
                 notesData.splice(index, 1);
                 JSONreadyNotes = JSON.stringify(notesData);
                 localStorage.setItem("notes", JSONreadyNotes);
-                Events.emit('renderInit', notesData);
+                Events.emit('update', notesData);
             } else {
                 notesData.splice(index, 1);
                 JSONreadyNotes = JSON.stringify(notesData);
                 localStorage.setItem("notes", JSONreadyNotes);
-                Events.emit('renderInit', notesData);
+                Events.emit('update', notesData);
             }
         } else console.log("not found to remove");
     }
@@ -116,7 +116,7 @@ define(['Communication/Events'], function (Events) {
                 return note.content.match(regex);
             });
 
-        Events.emit('renderSearch', notesResults);
+        Events.emit('update', notesResults);
     }
 
     function reorderData(data) {
@@ -135,7 +135,7 @@ define(['Communication/Events'], function (Events) {
         JSONreadyNotes = JSON.stringify(notesData);
         localStorage.setItem("notes", JSONreadyNotes);
 
-        Events.emit('renderSearch', notesData);
+        Events.emit('update', notesData);
     }
 
     return {
