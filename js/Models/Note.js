@@ -14,8 +14,6 @@ define(['Communication/Events'], function (Events) {
             }
         }
 
-        console.dir(notesData);
-
         Events.on('createNoteReq', newNote);
         Events.on('saveNoteReq', saveNote);
         Events.on('removeNoteReq', removeNote);
@@ -43,7 +41,7 @@ define(['Communication/Events'], function (Events) {
             JSONreadyNotes = JSON.stringify(notesData);
             localStorage.setItem("notes", JSONreadyNotes);
             Events.emit('renderInit', notesData);
-            if (!data.content) {
+            if (!data.hasOwnProperty('index')) {
                 Events.emit('commandNewNote', noteData);
             }
 
@@ -53,7 +51,7 @@ define(['Communication/Events'], function (Events) {
             JSONreadyNotes = JSON.stringify(notesData);
             localStorage.setItem("notes", JSONreadyNotes);
             Events.emit('renderInit', notesData);
-            if (!data.content) {
+            if (!data.index) {
                 Events.emit('commandNewNote', noteData);
             }
         }

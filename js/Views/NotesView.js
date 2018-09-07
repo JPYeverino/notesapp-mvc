@@ -11,10 +11,6 @@ define(['Communication/Events'], function (Events) {
         Events.on('render', render);
         Events.on('addNoteView', render);
         Events.on('renderResults', render);
-        Events.on('removeFromUndo', removeFromUndo);
-
-
-
     }
 
     function render(parameters) {
@@ -89,6 +85,7 @@ define(['Communication/Events'], function (Events) {
             }, 500);
 
         }
+        
     }
     //Add the event listener for each input on the note content using event delegation.
     appStage.addEventListener("input", inputListening);
@@ -102,10 +99,6 @@ define(['Communication/Events'], function (Events) {
         } else {
             Events.emit('removeNoteView', actualNoteId);
         }
-    }
-    
-    function removeFromUndo (data) {
-        Events.emit('removeNoteView', data);
     }
 
     //Add the envent listener for the closing newBtn using event delegation.

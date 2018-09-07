@@ -81,8 +81,6 @@ define(['Communication/Events'], function (Events) {
                 modifyDate: data.data.modifyDate
             }
         };
-        console.dir(data);
-        console.dir(commandList[currentCommand]);
 
         if (commandList[currentCommand + 1]) {
             commandList.splice(currentCommand + 1);
