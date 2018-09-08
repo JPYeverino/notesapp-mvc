@@ -11,9 +11,6 @@ define(['Communication/Events'], function (Events) {
         Events.on('setCommandReorderNote', commandReorderNote);
         Events.on('setCommandSaveNote', commandSaveNote);
         Events.on('undoReq', executeUndo);
-        // Events.on('saveNoteReq', commandSaveNote);
-        // Events.on('removeNoteReq', commandRemoveNote);
-        // Events.on('reorderReq', commandReorderData);
     }
 
     function commandNewNote(data) {

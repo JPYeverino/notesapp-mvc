@@ -171,11 +171,9 @@ define(['Communication/Events'], function (Events) {
             };
             Events.emit('reorder', info);
         } 
-        
     }
 
     appStage.addEventListener("drop", dropNote);
-
 
     return {
         init: init,

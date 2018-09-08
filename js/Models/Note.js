@@ -19,7 +19,6 @@ define(['Communication/Events'], function (Events) {
         Events.on('removeNoteReq', removeNote);
         Events.on('searchNoteReq', searchNote);
         Events.on('reorderReq', reorderData);
-        // Events.on('removeNoteDataUndo', sendRemoveNoteData);
     }
 
     function newNote(data) {
@@ -103,12 +102,6 @@ define(['Communication/Events'], function (Events) {
             }
         } else console.log("not found to remove");
     }
-
-    function sendRemoveNoteData(data) {
-        index = findNote(data);
-        Events.emit('getRemoveData', notesData[index]);
-    }
-
     function searchNote(data) {
         var notesResults = JSON.parse(localStorage.getItem('notes'))
             .filter(function (note) {

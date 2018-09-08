@@ -28,12 +28,11 @@ define(function () {
             });
         }
     }
-
+    
     return {
         events: events,
         on: on,
         off: off,
         emit: emit
     }
-
 });
