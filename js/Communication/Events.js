@@ -20,8 +20,7 @@ define(function () {
     }
 
     function emit (eventName, data) {
-        if (
-            events[eventName]) {
+        if (events[eventName]) {
             
             events[eventName].forEach(function(fn){
                 fn(data);
